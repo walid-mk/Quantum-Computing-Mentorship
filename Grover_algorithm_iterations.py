@@ -11,7 +11,8 @@ def grover_itera(t1:str, circuit_type: str, number_iteration: int):
     
     '''Summary:
         This code is general, accepts  as input any string of a binary number to be searched for.
-
+        He can only search for one solution at the moment.
+        
         The boolean oracle and diffuser operator are implemented in two different way:
 
             1- An 'ancilla' circuit; this way of implementing the circuit, regardless of other gates, uses
