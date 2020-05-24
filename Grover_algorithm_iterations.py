@@ -38,7 +38,7 @@ def grover_itera(t1:str, circuit_type: str, number_iteration: int):
               For inctance number_iteration=2 →(oracle+diffuser)+(oracle+diffuser).
               
         Returns:
-        and output the final circuit.'''
+        Output the Grover's circuit.'''
 
     n=len(t1)
     
