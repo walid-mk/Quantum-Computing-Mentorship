@@ -29,11 +29,11 @@ from qiskit.circuit.library.standard_gates import XGate
             For inctance, number_iterations=2 →(oracle+diffuser)+(oracle+diffuser).
             
     Returns:
-    Output the Grover's circuit; this is returned by the last function in this code `grover_itera()`.'''
+    Output the Grover's circuit; this is returned by the last function in this code `boolean_grover()`.'''
 
 ############################   ORACLE   ###############################
 
-def oracle(list_values:list, circuit_type:str):
+def boolean_oracle(list_values:list, circuit_type:str):
     n=len(list_values[0]) # Number of elements in one string.
     assert n>=2, 'Length of input should be greater or equal to 2.'
     assert len(set(map(len, list_values))) == 1, 'The values on your list should have the same length.'
@@ -94,7 +94,7 @@ def oracle(list_values:list, circuit_type:str):
             ##a1.barrier()
     return a1
 ##############################  GROVER'S DIFFUSER  #############################
-def diffuser(list_values:list, circuit_type:str):
+def boolean_diffuser(list_values:list, circuit_type:str):
     n=len(list_values[0])
     assert n>=2, 'Length of input should be greater or equal to 2.'
     
@@ -147,7 +147,7 @@ def diffuser(list_values:list, circuit_type:str):
     #########
     return a1
 #############################  ORACLE + DIFFUSER CIRCUIT  #############################
-def grover(list_values:list, circuit_type:str):
+def boolean_amplitude_amplification(list_values:list, circuit_type:str):
     n=len(list_values[0])
     assert n>=2, 'Length of input should be greater or equal to 2.'
     assert len(set(map(len, list_values))) == 1, 'The values on your list should have the same length.'
@@ -155,13 +155,13 @@ def grover(list_values:list, circuit_type:str):
     if (circuit_type == 'noancilla' or n==2):
         q1=QuantumRegister(n+1, "q")
         a1=QuantumCircuit(q1)
-        a1.append(oracle(list_values, circuit_type), [*range(n+1)]) # Add oracle.
-        a1.append(diffuser(list_values, circuit_type), [*range(n)]) # Add diffuser.
+        a1.append(boolean_oracle(list_values, circuit_type), [*range(n+1)]) # Add oracle.
+        a1.append(boolean_diffuser(list_values, circuit_type), [*range(n)]) # Add diffuser.
     elif circuit_type =='ancilla':
         q1=QuantumRegister(n*2, "q")
         a1=QuantumCircuit(q1)
-        a1.append(oracle(list_values, circuit_type), [*range(n*2)])
-        a1.append(diffuser(list_values, circuit_type), [*range(n*2)])
+        a1.append(boolean_oracle(list_values, circuit_type), [*range(n*2)])
+        a1.append(boolean_diffuser(list_values, circuit_type), [*range(n*2)])
     return a1
 
 #####################  INITIALIZE THE CIRCUIT WITH BALANCED STATE  #####################
@@ -184,7 +184,7 @@ def initialize(list_values:list, circuit_type:str):
     return a
 
 #####################              GROVER'S CIRCUIT               ##################### 
-def grover_itera(list_values:list, circuit_type: str, number_iterations: int):
+def boolean_grover(list_values:list, circuit_type: str, number_iterations: int):
     n=len(list_values[0])
     assert n>=2, 'Length of input should be greater or equal to 2.'
     assert len(set(map(len, list_values))) == 1, 'The values on your list should have the same length.'
@@ -195,7 +195,7 @@ def grover_itera(list_values:list, circuit_type: str, number_iterations: int):
         ############### COMBINE: BALANCED STATE + ORACLE + DIFFUSER ###############
     # Iterate: (oracle+diffuser) + (oracle+diffuser) + ... .
     for i in range(number_iterations):
-        circuit=circuit.combine(grover(list_values, circuit_type))
+        circuit=circuit.combine(boolean_amplitude_amplification(list_values, circuit_type))
     
     circuit.measure([*range(n)],[*range(n)]) # Measure the n qubits.
 
